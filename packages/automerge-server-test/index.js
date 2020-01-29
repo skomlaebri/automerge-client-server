@@ -37,6 +37,12 @@ const automergeServer = new AutomergeServer({
     }
     return Promise.resolve()
   },
+
+  initDocument: (id) =>{
+    return Automerge.change(Automerge.init(), doc => {
+      doc.docId = id
+    })
+  }
 })
 
 const server = http.createServer()

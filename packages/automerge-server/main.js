@@ -4,6 +4,7 @@ import Automerge, { DocSet } from 'automerge'
  * checkAccess: (id: string, req: Request) => Promise<boolean>
  * loadDocument: (id: string) => Promise<string | false | AutomergeDoc>
  * saveDocument: (id: string, document: string) => Promise<void>
+ * initDocument: (id: string) => AutomergeDoc
  */
 
 /*
@@ -94,6 +95,7 @@ export default class AutomergeServer {
   constructor({
     loadDocument,
     saveDocument,
+    initDocument,
     checkAccess = (id, req) => Promise.resolve(true),
   }) {
     if (typeof loadDocument !== 'function')
@@ -104,6 +106,7 @@ export default class AutomergeServer {
     this.loadDocument = loadDocument
     this.saveDocument = saveDocument
     this.checkAccess = checkAccess
+    this.initDocument = initDocument
 
     this.docs = {}
     this.onChange = this.onChange.bind(this)
@@ -125,10 +128,9 @@ export default class AutomergeServer {
           return Automerge.load(doc)
         }
         if (!doc) {
-          // if falsy create new empty document
-          return Automerge.change(Automerge.init(), doc => {
-            doc.docId = id
-          })
+          // if falsy create new document based on the tempmlate passed by initDocument
+          //the initDocument function will return an automerge document
+          return this.initDocument(id)
         }
         // if not falsy nor string we expect automerge document
         // created via Automerge.init()
