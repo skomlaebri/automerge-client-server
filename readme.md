@@ -46,6 +46,8 @@ const server = new AutomergeServer({
   // text is what should be saved (and later returned from load).
   // Doc contains automerge document (usefull for saving in other formats)
   saveDocument: (id, text, doc) => ...,
+  // Returns the automerge document template for a new document
+  initDocument: (id) => ...,
   // Returns promise of true (access granted) or false (access denied)
   checkAccess: (id, req) => ..., 
 })
