@@ -57,7 +57,7 @@ export default class AutomergeClient {
 
   private_onMessage(msg) {
     const frame = JSON.parse(msg.data)
-    console.log('message', frame)
+    // console.log('message', frame)
 
     if (frame.action === 'automerge') {
       this.autocon.receiveMsg(frame.data)
@@ -127,7 +127,7 @@ export default class AutomergeClient {
 
   subscribe(ids) {
     if (ids.length <= 0) return
-    console.log('Trying to subscribe to ' + JSON.stringify(ids))
+    // console.log('Trying to subscribe to ' + JSON.stringify(ids))
     this.subscribeList = this.subscribeList.concat(ids).filter(unique)
     if (this.socket.readyState === 1) {
       // OPEN

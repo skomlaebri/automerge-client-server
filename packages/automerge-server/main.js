@@ -67,7 +67,7 @@ class Document {
     docSet.setDoc(this.id, this.doc)
 
     const handler = (docId, doc) => {
-      console.log('handler', docId, doc)
+      // console.log('handler', docId, doc)
       if (docId !== this.id) return // not this doc
       if (doc === this.doc) return // already handled
       this.doc = doc
@@ -144,7 +144,7 @@ export default class AutomergeServer {
   }
 
   handleSocket(ws, req) {
-    console.log('open')
+    // console.log('open')
     const docSet = new DocSet()
 
     docSet.registerHandler((id, doc) => console.log('handler', id, doc))
@@ -157,7 +157,7 @@ export default class AutomergeServer {
     }
 
     const send = (action, data) =>
-      console.log('sending', action, data) ||
+      // console.log('sending', action, data) ||
       ws.send(JSON.stringify({ action, ...data }))
 
     const autocon = new Automerge.Connection(docSet, data => {
