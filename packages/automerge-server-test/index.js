@@ -31,7 +31,7 @@ const automergeServer = new AutomergeServer({
     return Promise.resolve(false)
   },
   saveDocument: (id, text) => {
-    console.log('Saving', id)
+    // console.log('Saving', id)
     if (/[a-z]+/.exec(id)) {
       return promisify(fs.writeFile)(fname(id), text, 'utf8')
     }

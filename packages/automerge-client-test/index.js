@@ -33,7 +33,7 @@ const rl = readline.createInterface({
 function handleLine() {
   rl.question('automerge> ', line => {
     const [cmd, ...args] = line.trim().split(/ +/)
-    console.log(cmd, args)
+    // console.log(cmd, args)
     if (cmd === 'subscribe' || cmd === 's') {
       subscribe(args)
     } else if (['c', 'ch', 'change'].includes(cmd)) {

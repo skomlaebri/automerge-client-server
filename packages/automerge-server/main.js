@@ -232,7 +232,7 @@ export default class AutomergeServer {
     }
 
     const automergeMessage = data => {
-      console.log(data)
+      // console.log(data)
       if (subscribedDocuments.some(doc => doc.id === data.docId)) {
         autocon.receiveMsg(data)
       } else {
@@ -243,11 +243,11 @@ export default class AutomergeServer {
     }
 
     const handleFrame = frame => {
-      console.log('handling', frame)
+      // console.log('handling', frame)
       if (frame.action === 'automerge') {
         automergeMessage(frame.data)
       } else if (frame.action === 'error') {
-        console.error('Recieved error frame from client', frame)
+        // console.error('Recieved error frame from client', frame)
       } else if (frame.action === 'subscribe') {
         frame.ids.forEach(id => subscribeToDoc(id))
       } else if (frame.action === 'unsubscribe') {
