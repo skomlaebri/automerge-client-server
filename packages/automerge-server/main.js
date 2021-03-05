@@ -147,7 +147,9 @@ export default class AutomergeServer {
     // console.log('open')
     const docSet = new DocSet()
 
-    docSet.registerHandler((id, doc) => console.log('handler', id, doc))
+    docSet.registerHandler((id, doc) => { 
+      //console.log('handler', id, doc)
+    })
 
     let subscribedDocuments = [] // Document[]
     let subscribingDocuments = [] // { id: string, cancel: boolean }[]
