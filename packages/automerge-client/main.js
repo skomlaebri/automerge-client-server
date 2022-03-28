@@ -64,7 +64,7 @@ export default class AutomergeClient {
     } else if (frame.action === 'error') {
       console.error('Recieved server-side error ' + frame.message)
     } else if (frame.action === 'subscribed') {
-      console.error('Subscribed to ' + JSON.stringify(frame.id))
+      console.log('Subscribed to ' + JSON.stringify(frame.id))
     } else {
       console.error('Unknown action "' + frame.action + '"')
     }
@@ -95,9 +95,12 @@ export default class AutomergeClient {
       this.onChange(docId, this.docs[docId])
     })
 
-    const autocon = (this.autocon = new Automerge.Connection(docSet, send))
-    autocon.open()
-    this.subscribe(Object.keys(this.docs).concat(this.subscribeList))
+
+      const autocon = (this.autocon = new Automerge.Connection(docSet, send))
+      autocon.open()
+    if ( this.client.subscribeList.findIndex(p => p === projectId) === -1) {
+      this.subscribe(Object.keys(this.docs).concat(this.subscribeList))
+    }
   }
 
   private_onClose() {
