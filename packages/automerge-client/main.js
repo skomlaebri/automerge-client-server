@@ -141,7 +141,7 @@ export default class AutomergeClient {
     if (ids.length <= 0) return
     
     this.subscribeList = this.subscribeList.filter((value,index) => {
-      return ids.indexOf(value) == -1
+      return ids.indexOf(value) === -1
     })
     
     if (this.socket.readyState === 1) {
@@ -162,9 +162,10 @@ export default class AutomergeClient {
 
     //if the document is part of pausedDocs
     this.pausedDocs = this.pausedDocs.filter((value,index) => {
-      return ids.indexOf(value) == -1
+      return ids.indexOf(value) === -1
     })
 
+    let i
     for(i=0; i<ids.length; i++){
 
       if(!this.docSet.getDoc(ids[i])){
