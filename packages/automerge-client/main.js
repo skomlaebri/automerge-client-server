@@ -76,29 +76,36 @@ export default class AutomergeClient {
       this.socket.send(JSON.stringify({ action: 'automerge', data }))
     }
 
+
     const docSet = (this.docSet = new DocSet())
     docSet.registerHandler((docId, doc) => {
+      let changes = [];
+      const initDocs = false;
       if (!this.docs[docId] || lessOrEqual(this.docs[docId], doc)) {
         // local changes are reflected in new doc
         this.docs[docId] = doc
+        this.initDocs = true;
       } else {
         // local changes are NOT reflected in new doc
-        const merged = Automerge.merge(this.docs[docId], doc)
-        setTimeout(() => docSet.setDoc(docId, merged), 0)
+        changes = Automerge.getChanges(this.docs[docId], doc)
+        let [newDoc, patch] = Automerge.applyChanges(this.docs[docId], changes)
+        setTimeout(() => docSet.setDoc(docId, newDoc), 0)
       }
       this.subscribeList = this.subscribeList.filter(el => el !== docId)
+      if (initDocs || changes.length > 0){
+        if (this.save) {
+          this.save(doSave(this.docs))
+        }
 
-      if (this.save) {
-        this.save(doSave(this.docs))
+        this.onChange(docId, this.docs[docId])
       }
 
-      this.onChange(docId, this.docs[docId])
     })
 
 
       const autocon = (this.autocon = new Automerge.Connection(docSet, send))
       autocon.open()
-    if ( this.client.subscribeList.findIndex(p => p === projectId) === -1) {
+    if ( this.subscribeList.findIndex(p => p === docId) === -1) {
       this.subscribe(Object.keys(this.docs).concat(this.subscribeList))
     }
   }
