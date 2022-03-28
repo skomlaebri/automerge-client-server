@@ -78,21 +78,28 @@ export default class AutomergeClient {
 
     const docSet = (this.docSet = new DocSet())
     docSet.registerHandler((docId, doc) => {
+      let changes = [];
+      let firstTime = false;
       if (!this.docs[docId] || lessOrEqual(this.docs[docId], doc)) {
         // local changes are reflected in new doc
         this.docs[docId] = doc
+        firstTime = true;
       } else {
         // local changes are NOT reflected in new doc
-        const merged = Automerge.merge(this.docs[docId], doc)
-        setTimeout(() => docSet.setDoc(docId, merged), 0)
+        changes = Automerge.getChanges(this.docs[docId], doc)
+        const [newDoc, patch] = Automerge.applyChanges(this.docs[docId], changes);
+        setTimeout(() => docSet.setDoc(docId, newDoc), 0)
       }
       this.subscribeList = this.subscribeList.filter(el => el !== docId)
 
-      if (this.save) {
-        this.save(doSave(this.docs))
+      if (firstTime || changes.length > 0) {
+        if (this.save) {
+          this.save(doSave(this.docs))
+        }
+
+        this.onChange(docId, this.docs[docId])
       }
 
-      this.onChange(docId, this.docs[docId])
     })
 
     const autocon = (this.autocon = new Automerge.Connection(docSet, send))
