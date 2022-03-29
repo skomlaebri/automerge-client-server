@@ -80,10 +80,11 @@ export default class AutomergeClient {
     docSet.registerHandler((docId, doc) => {
       let changes = [];
 
-      changes = Automerge.getChanges(!this.docs[docId] ? Automerge.init() : this.docs[docId], doc)
-      const [newDoc, patch] = Automerge.applyChanges(this.docs[docId], changes);
-      setTimeout(() => docSet.setDoc(docId, newDoc), 0)
+      const initDoc = this.docs[docId] ?? Automerge.init();
 
+      changes = Automerge.getChanges(initDoc, doc)
+      const [newDoc, patch] = Automerge.applyChanges(initDoc, changes);
+      setTimeout(() => docSet.setDoc(docId, newDoc), 0)
       this.subscribeList = this.subscribeList.filter(el => el !== docId)
 
       if (changes.length > 0) {
@@ -91,7 +92,7 @@ export default class AutomergeClient {
           this.save(doSave(this.docs))
         }
 
-        this.onChange(docId, this.docs[docId])
+        this.onChange(docId, newDoc)
       }
 
     })
